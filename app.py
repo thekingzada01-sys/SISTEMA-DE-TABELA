@@ -95,6 +95,10 @@ def upload():
             arquivo.save(os.path.join(RESULTADOS_DIR, arquivo.filename))
     return redirect("/")
 
+@app.route("/teste")
+def teste():
+    return "FUNCIONANDO"
+
 @app.route("/reset")
 def reset():
     db = {"times": {}, "players": {}, "processados": []}
