@@ -39,6 +39,7 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 
 <h1>🏆 PONTUAÇÃO TKZ</h1>
 
+<!-- UPLOAD -->
 <div class="card">
 <h2>📤 Upload MatchResult</h2>
 <form action="/upload" method="POST" enctype="multipart/form-data">
@@ -47,6 +48,7 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 </form>
 </div>
 
+<!-- CLASSIFICAÇÃO GERAL -->
 <div class="card">
 <div class="topo-flex">
 <h2>🏆 CLASSIFICAÇÃO GERAL</h2>
@@ -60,9 +62,7 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 </div>
 
 <table>
-<tr>
-<th>#</th><th>TIME</th><th>KILLS</th><th>PONTOS</th><th>QUEDAS</th>
-</tr>
+<tr><th>#</th><th>TIME</th><th>KILLS</th><th>PONTOS</th><th>QUEDAS</th></tr>
 {% for team, data in teams %}
 <tr class="{% if loop.index == 1 %}gold{% elif loop.index == 2 %}silver{% elif loop.index == 3 %}bronze{% endif %}">
 <td>{{ loop.index }}</td>
@@ -75,6 +75,7 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 </table>
 </div>
 
+<!-- MVP GERAL -->
 <div class="card">
 <h2>⭐ MVP GERAL</h2>
 {% if mvp %}
@@ -84,6 +85,7 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 {% endif %}
 </div>
 
+<!-- MVP / KD PLAYERS -->
 <div class="card">
 <div class="topo-flex"><h2>🎯 MVP / KD PLAYERS</h2></div>
 <table>
@@ -99,18 +101,17 @@ input{background:#111;color:white;border:none;padding:12px;border-radius:10px;fo
 </table>
 </div>
 
+<!-- SCRIPT COPIAR -->
 <script>
 function copiarTabela() {
-  fetch('/copiar_tabela').then(r=>r.text()).then(t=>{
-    navigator.clipboard.writeText(t);
-    alert("Tabela copiada!");
-  });
+  fetch('/copiar_tabela')
+    .then(r => r.text())
+    .then(t => { navigator.clipboard.writeText(t); alert("Tabela copiada!"); });
 }
 function copiarMVP() {
-  fetch('/copiar_mvp').then(r=>r.text()).then(t=>{
-    navigator.clipboard.writeText(t);
-    alert("MVP copiado!");
-  });
+  fetch('/copiar_mvp')
+    .then(r => r.text())
+    .then(t => { navigator.clipboard.writeText(t); alert("MVP copiado!"); });
 }
 </script>
 
