@@ -866,5 +866,7 @@ def index():
     return "Aplicação rodando!"
 
 if __name__ == "__main__":
+    # Usa a porta do Railway se existir, senão 5000 local
     port = int(os.environ.get("PORT", 5000))
+    # host="0.0.0.0" permite acesso externo
     app.run(host="0.0.0.0", port=port)
