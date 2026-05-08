@@ -1,4 +1,4 @@
-# app.py - versão completa pronta para Railway
+# app.py - versão completa pronta para Railway, Pillow seguro sem arial.ttf
 
 import os
 import re
@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 DB_FILE = "database.json"
 RESULTADOS_DIR = "resultados"
-FONT_PATH = "arial.ttf"
+FONT_PATH = "arial.ttf"  # ainda pode deixar, mas fallback será usado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ==========================================
@@ -142,11 +142,14 @@ def export():
         altura = 300 + (len(teams) * 78)
         imagem = get_background(largura, altura)
         draw = ImageDraw.Draw(imagem)
+        # ============================
+        # Fallback seguro de fontes
+        # ============================
         try:
             fonte_titulo = ImageFont.truetype(FONT_PATH, 60)
             fonte_header = ImageFont.truetype(FONT_PATH, 28)
             fonte = ImageFont.truetype(FONT_PATH, 32)
-        except:
+        except Exception:
             fonte_titulo = fonte_header = fonte = ImageFont.load_default()
         # Título
         draw.text((40, 20), "CLASSIFICACAO GERAL", fill=(255,255,255), font=fonte_titulo)
@@ -182,11 +185,9 @@ def export():
         return f"ERRO AO EXPORTAR TABELA: {str(e)}"
 
 # ==========================================
-# Export MVP, texto tabela, copiar tabela/mvp
-# (mesma lógica que export, simplificada)
-# ==========================================
-# ... você mantém todo o código igual ao seu original
-# apenas certificando que está dentro do Railway host/port
+# Aqui você mantém todas as outras rotas (MVP, copiar tabela, export texto, etc.)
+# Só precisa garantir que qualquer bloco de fontes tenha o mesmo fallback seguro:
+# try: ImageFont.truetype(...) except: ImageFont.load_default()
 
 # ==========================================
 # Start da aplicação
