@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>PONTUAÇÃO TKZ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050505;
+    font-family:'Rajdhani', sans-serif;
+    color:white;
+    padding:25px;
+}
+
+h1{
+    color:#00ffae;
+    font-size:55px;
+    margin-bottom:30px;
+    text-shadow:0 0 15px #00ffae;
+}
+
+.card{
+    background:#0b0b0b;
+    border:1px solid #ff0000;
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 0 20px rgba(255,0,0,0.3);
+}
+
+h2{
+    margin-bottom:20px;
+    color:#ffffff;
+    font-size:35px;
+}
+
+.topo-flex{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:20px;
+}
+
+th{
+    background:linear-gradient(90deg,#7a0000,#ff0000);
+    color:white;
+    padding:18px;
+    font-size:22px;
+    letter-spacing:1px;
+    border-right:2px solid rgba(255,255,255,0.1);
+}
+
+td{
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    border-right:2px solid rgba(255,255,255,0.03);
+}
+
+tr{
+    background:#090909;
+    transition:0.3s;
+}
+
+tr:hover{
+    transform:scale(1.002);
+    background:#111;
+}
+
+.gold{
+    background:linear-gradient(90deg,#ffd700,#ffbf00);
+    color:black;
+    font-weight:bold;
+}
+
+.silver{
+    background:linear-gradient(90deg,#c0c0c0,#ececec);
+    color:black;
+    font-weight:bold;
+}
+
+.bronze{
+    background:linear-gradient(90deg,#cd7f32,#a45a1c);
+    color:white;
+    font-weight:bold;
+}
+
+.export-btn{
+    background:linear-gradient(45deg,#ff0000,#ff4d4d);
+    border:none;
+    padding:14px 25px;
+    color:white;
+    border-radius:12px;
+    font-size:18px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.export-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px red;
+}
+
+input{
+    background:#111;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    font-size:18px;
+}
+
+.upload-btn{
+    background:#00ffae;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-left:10px;
+}
+
+.mvp-box{
+    background:linear-gradient(90deg,#111,#1d0000);
+    border-left:5px solid gold;
+    padding:25px;
+    border-radius:15px;
+    font-size:35px;
+    color:gold;
+    font-weight:bold;
+}
+
+.kill-red{
+    color:#ff4d4d;
+    font-weight:bold;
+}
+
+.ponto-green{
+    color:#00ffae;
+    font-weight:bold;
+}
+
+.botoes{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+/* TODOS OS BOTÕES */
+
+.botoes a,
+.botoes button{
+
+    background:linear-gradient(45deg,#ff0000,#ff4d4d);
+
+    color:white;
+
+    border:none;
+
+    padding:14px 28px;
+
+    border-radius:14px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:0.25s;
+
+    box-shadow:0 4px 15px rgba(255,0,0,0.35);
+
+    font-family:'Rajdhani', sans-serif;
+}
+
+/* HOVER */
+
+.botoes a:hover,
+.botoes button:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:0 0 18px red;
+}
+/* COPIAR */
+
+.btn-copiar {
+
+    background: #00c853 !important;
+}
+
+.btn-copiar:hover {
+
+    background: #00e676 !important;
+    transform: scale(1.05);
+}
+
+/* RESETAR */
+
+.btn-resetar {
+
+    background: #ff2d2d;
+}
+
+.btn-resetar:hover {
+
+    background: #ff4444;
+    transform: scale(1.05);
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🏆 PONTUAÇÃO TKZ</h1>
+
+<div class="card">
+
+<h2>📤 Upload MatchResult</h2>
+
+<form action="/upload" method="POST" enctype="multipart/form-data">
+
+<input type="file" name="log" multiple>
+
+<button class="upload-btn" type="submit">
+UPLOAD
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<div class="topo-flex">
+
+<h2>🏆 CLASSIFICAÇÃO GERAL</h2>
+
+<div class="botoes">
+
+    <a href="/export">
+        EXPORTAR TABELA
+    </a>
+</button>
+<a href="/export_mvp">
+    EXPORTAR MVP
+</a>
+    <button onclick="copiarTabela()">
+    COPIAR TABELA
+</button>
+<button onclick="copiarMVP()">
+    COPIAR MVP
+</button>
+<a href="/reset">
+
+<button class="export-btn">
+RESETAR
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+<table>
+
+<tr>
+
+<th>#</th>
+<th>TIME</th>
+<th>KILLS</th>
+<th>PONTOS</th>
+<th>QUEDAS</th>
+
+</tr>
+
+{% for team, data in teams %}
+
+<tr class="
+{% if loop.index == 1 %}
+gold
+{% elif loop.index == 2 %}
+silver
+{% elif loop.index == 3 %}
+bronze
+{% endif %}
+">
+
+<td>{{ loop.index }}</td>
+
+<td>{{ team }}</td>
+
+<td class="kill-red">
+{{ data.kills }}
+</td>
+
+<td class="ponto-green">
+{{ data.pontos }}
+</td>
+
+<td>
+{{ data.quedas }}
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+<div id="tabela-mvp">
+
+    <h1>CLASSIFICAÇAO MVP</h1>
+
+    <!-- tabela -->
+
+</div>
+
+
+</div>
+
+<div class="card">
+
+<h2>⭐ MVP GERAL</h2>
+
+{% if mvp %}
+
+<div class="mvp-box">
+
+🔥 {{ mvp[0] }} — {{ mvp[1].kills }} KILLS
+
+</div>
+
+{% endif %}
+
+</div>
+
+<div class="card">
+
+<div class="topo-flex">
+
+<h2>🎯 MVP / KD PLAYERS</h2>
+
+</div>
+<table>
+
+<tr>
+
+<th>#</th>
+<th>PLAYER</th>
+<th>KILLS</th>
+<th>KD</th>
+
+</tr>
+
+{% for player, data in players %}
+
+<tr class="
+{% if loop.index == 1 %}
+gold
+{% elif loop.index == 2 %}
+silver
+{% elif loop.index == 3 %}
+bronze
+{% endif %}
+">
+
+<td>{{ loop.index }}</td>
+
+<td>{{ player }}</td>
+
+<td>{{ data.kills }}</td>
+
+<td>
+
+{% if data.quedas > 0 %}
+
+{{ "%.2f"|format(data.kills / data.quedas) }}
+
+{% else %}
+
+{{ data.kills }}
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div id="tabela-times">
+
+    <h1>CLASSIFICAÇÃO</h1>
+
+    <!-- tabela -->
+
+</div>
+<div id="tabela-mvp">
+
+    <h1>MVP</h1>
+
+    <!-- tabela -->
+
+</div>
+
+</script>
+
+</body>
+
+</html>
