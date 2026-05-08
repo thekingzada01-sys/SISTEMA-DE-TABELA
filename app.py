@@ -1,4 +1,4 @@
-# app.py - versão completa pronta para Railway, Pillow seguro sem arial.ttf
+# app.py - versão final pronta para Railway
 
 import os
 import re
@@ -11,19 +11,19 @@ app = Flask(__name__)
 
 DB_FILE = "database.json"
 RESULTADOS_DIR = "resultados"
-FONT_PATH = "arial.ttf"  # ainda pode deixar, mas fallback será usado
+FONT_PATH = "arial.ttf"  # ou use outra fonte compatível
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ==========================================
-# Inicializar database se não existir
-# ==========================================
+# ==========================
+# Inicializar database
+# ==========================
 if not os.path.exists(DB_FILE):
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump({"times": {}, "players": {}, "processados": []}, f, indent=4, ensure_ascii=False)
 
-# ==========================================
-# Funções de load/save
-# ==========================================
+# ==========================
+# Funções load/save
+# ==========================
 def load_db():
     with open(DB_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -32,9 +32,9 @@ def save_db(db):
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump(db, f, indent=4, ensure_ascii=False)
 
-# ==========================================
+# ==========================
 # Processar logs
-# ==========================================
+# ==========================
 def process_logs():
     db = load_db()
     if not os.path.exists(RESULTADOS_DIR):
@@ -43,12 +43,11 @@ def process_logs():
     for arquivo in os.listdir(RESULTADOS_DIR):
         if not arquivo.endswith(".log") or arquivo in db["processados"]:
             continue
-
         caminho = os.path.join(RESULTADOS_DIR, arquivo)
         with open(caminho, "r", encoding="utf-8", errors="ignore") as f:
             conteudo = f.read()
 
-        # Processar times
+        # TIMES
         teams = re.findall(
             r"TeamName:\s*(.*?)\s+Rank:\s*(\d+)\s+KillScore:\s*(\d+)\s+RankScore:\s*(\d+)\s+TotalScore:\s*(\d+)",
             conteudo,
@@ -64,7 +63,7 @@ def process_logs():
             db["times"][nome]["pontos"] += pontos
             db["times"][nome]["quedas"] += 1
 
-        # Processar players
+        # PLAYERS
         players = re.findall(r"NAME:\s*(.*?)\s+ID:\s*(\d+)\s+KILL:\s*(\d+)", conteudo, re.MULTILINE)
         for player in players:
             nome = player[0].strip()
@@ -74,16 +73,14 @@ def process_logs():
                 db["players"][nome] = {"id": pid, "kills": 0, "quedas": 0, "kd": 0}
             db["players"][nome]["kills"] += kills
             db["players"][nome]["quedas"] += 1
-            quedas = db["players"][nome]["quedas"]
-            db["players"][nome]["kd"] = round(db["players"][nome]["kills"] / max(quedas, 1), 2)
+            db["players"][nome]["kd"] = round(db["players"][nome]["kills"] / max(db["players"][nome]["quedas"], 1), 2)
 
         db["processados"].append(arquivo)
-
     save_db(db)
 
-# ==========================================
+# ==========================
 # Função para background
-# ==========================================
+# ==========================
 def get_background(largura, altura):
     fundo_final = Image.new("RGB", (largura, altura), (5,5,5))
     background_path = os.path.join(BASE_DIR, "background.png")
@@ -100,9 +97,9 @@ def get_background(largura, altura):
     fundo_final.paste(background, (pos_x, pos_y))
     return fundo_final
 
-# ==========================================
-# Rotas
-# ==========================================
+# ==========================
+# Rotas principais
+# ==========================
 @app.route("/")
 def home():
     process_logs()
@@ -132,7 +129,9 @@ def reset():
                 os.remove(os.path.join(RESULTADOS_DIR, f))
     return redirect("/")
 
-# Exportar classificação geral
+# ==========================
+# Exportação da tabela
+# ==========================
 @app.route("/export")
 def export():
     try:
@@ -142,14 +141,11 @@ def export():
         altura = 300 + (len(teams) * 78)
         imagem = get_background(largura, altura)
         draw = ImageDraw.Draw(imagem)
-        # ============================
-        # Fallback seguro de fontes
-        # ============================
         try:
             fonte_titulo = ImageFont.truetype(FONT_PATH, 60)
             fonte_header = ImageFont.truetype(FONT_PATH, 28)
             fonte = ImageFont.truetype(FONT_PATH, 32)
-        except Exception:
+        except:
             fonte_titulo = fonte_header = fonte = ImageFont.load_default()
         # Título
         draw.text((40, 20), "CLASSIFICACAO GERAL", fill=(255,255,255), font=fonte_titulo)
@@ -184,8 +180,11 @@ def export():
     except Exception as e:
         return f"ERRO AO EXPORTAR TABELA: {str(e)}"
 
-# ==========================================
-# Aqui você mantém todas as outras rotas (MVP, copiar tabela, export texto, etc.)
-# Só precisa garantir que qualquer bloco de fontes tenha o mesmo fallback seguro:
-# try: ImageFont.truetype(...) except: ImageFont.load_default()
+# ==========================
+# Todas outras rotas seguem o mesmo padrão
+# ==========================
 
+# ==========================
+# NÃO USAR app.run()
+# ==========================
+# O Railway vai rodar com gunicorn no Procfile
